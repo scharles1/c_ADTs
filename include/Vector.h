@@ -74,6 +74,15 @@ void *vector_elem (vector *v, int index);
 void vector_insert (vector *v, const void *elem, int index);
 
 /**
+ * Function: vector_remove
+ * Usage: vector_remove (v, 0)
+ * ------------------------------------------------------
+ * Removes the element at index and shifts remaining elements down to fill the
+ * empty element. The element is destroyed with the provided destroy function.
+ */
+void vector_remove (vector *v, int index);
+
+/**
  * Function: vector_append
  * Usage: vector_append (v, &elem)
  * ------------------------------------------------------

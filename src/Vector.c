@@ -115,6 +115,8 @@ vector_insert (vector *v, const void *elem, int index)
 {
 	assert (v != NULL);
 	assert (elem != NULL);
+	assert (index <= v->n_elems);
+
 	void *insert_at, *next;
 
 	if (v->n_elems == v->capacity)
@@ -129,6 +131,31 @@ vector_insert (vector *v, const void *elem, int index)
 	memcpy (insert_at, elem, v->elem_sz);
 
 	++v->n_elems;
+}
+
+/**
+ * Function: vector_remove
+ * Usage: vector_remove (v, 0)
+ * ------------------------------------------------------
+ */
+void 
+vector_remove (vector *v, int index)
+{
+	assert (v != NULL);
+	assert (index < v->n_elems);
+
+	void *remove_at, *next;
+
+	remove_at = ELEM_ACCESS (v, index);
+	next = ELEM_ACCESS (v, index + 1);
+
+	if (v->elem_destroy)
+	{
+		v->elem_destroy (remove_at);
+	}
+
+	--v->n_elems;
+	memmove (remove_at, next, (v->n_elems - index) * (v->elem_sz));
 }
 
 /**
@@ -177,7 +204,8 @@ vector_replace (vector *v, const void *elem, int index)
  * Function: vector_clear
  * ------------------------------------------------------
  */
-void vector_clear (vector *v)
+void 
+vector_clear (vector *v)
 {
 	assert (v != NULL);
 	size_t i;
