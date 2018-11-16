@@ -41,7 +41,7 @@ test_vector_append_multiple (void)
 
 	vector_clear (v);
 
-	/* write 0xdeadbeef multiple times into vector */
+	/* write multiple times into vector */
 	for (i = 0; i < 10; i++)
 	{
 		vector_append (v, &i);
