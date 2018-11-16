@@ -57,12 +57,12 @@ void vector_destroy (vector *v);
 size_t vector_size (vector *v);
 
 /**
- * Function: vector_elem
- * Usage: void *elem = vector_elem (v, 0)
+ * Function: vector_access
+ * Usage: void *elem = vector_access (v, 0)
  * ------------------------------------------------------
  * Returns a pointer to the element in the vector defined by index. 
  */
-void *vector_elem (vector *v, int index);
+void *vector_access (vector *v, int index);
 
 /**
  * Function: vector_insert

@@ -7,8 +7,8 @@
 #include <assert.h>
 #include <string.h>
 
-#define DEFAULT_CAPACITY      (16)
-#define ELEM_ACCESS(V, INDEX) ((char *)(V->elems) + ((INDEX) * (V->elem_sz)))
+#define DEFAULT_CAPACITY       (16)
+#define GET_PTR_ELEM(V, INDEX) ((char *)(V->elems) + ((INDEX) * (V->elem_sz)))
 
 /**
  * Struct: vector_implementation
@@ -89,19 +89,16 @@ vector_size (vector *v)
 }
 
 /**
- * Function: vector_elem
+ * Function: vector_access
  * ------------------------------------------------------
  */
 void *
-vector_elem (vector *v, int index)
+vector_access (vector *v, int index)
 {
 	assert (v != NULL);
-	void *ptr = NULL;
+	void *ptr;
 
-	if (index < v->n_elems)
-	{
-		ptr = ELEM_ACCESS (v, index);
-	}
+	ptr = GET_PTR_ELEM (v, index);
 
 	return ptr;
 }
@@ -124,8 +121,8 @@ vector_insert (vector *v, const void *elem, int index)
 		vector_double_capacity (v);
 	}
 
-	insert_at = ELEM_ACCESS (v, index);
-	next = ELEM_ACCESS (v, index + 1);
+	insert_at = GET_PTR_ELEM (v, index);
+	next = GET_PTR_ELEM (v, index + 1);
 
 	memmove (next, insert_at, (v->n_elems - index) * (v->elem_sz));
 	memcpy (insert_at, elem, v->elem_sz);
@@ -146,8 +143,8 @@ vector_remove (vector *v, int index)
 
 	void *remove_at, *next;
 
-	remove_at = ELEM_ACCESS (v, index);
-	next = ELEM_ACCESS (v, index + 1);
+	remove_at = GET_PTR_ELEM (v, index);
+	next = GET_PTR_ELEM (v, index + 1);
 
 	if (v->elem_destroy)
 	{
@@ -174,7 +171,7 @@ vector_append (vector *v, const void *elem)
 		vector_double_capacity (v);
 	}
 
-	next_elem = ELEM_ACCESS (v, v->n_elems);
+	next_elem = GET_PTR_ELEM (v, v->n_elems);
 	memcpy (next_elem, elem, v->elem_sz);
 	++v->n_elems;
 }
@@ -191,7 +188,7 @@ vector_replace (vector *v, const void *elem, int index)
 	assert (index < v->n_elems);
 	void *to_replace;
 
-	to_replace = ELEM_ACCESS (v, index);
+	to_replace = GET_PTR_ELEM (v, index);
 	if (v->elem_destroy)
 	{
 		v->elem_destroy (to_replace);
@@ -214,7 +211,7 @@ vector_clear (vector *v)
 	{
 		for (i = 0; i < v->n_elems; i++)
 		{
-			v->elem_destroy (vector_elem (v, i));
+			v->elem_destroy (vector_access (v, i));
 		}
 	}
 

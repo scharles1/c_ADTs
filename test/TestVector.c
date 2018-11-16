@@ -11,15 +11,6 @@ test_vector_init (void)
 }
 
 static void
-test_vector_invalid_elem_access (void)
-{
-	unsigned *ptr;
-
-	ptr = vector_elem (v, -1);
-	TEST_ASSERT_MESSAGE (ptr == NULL, "vector elem returned valid pointer");
-}
-
-static void
 test_vector_append_once (void)
 {
 	unsigned to_append = 0xdeadbeef;
@@ -27,7 +18,7 @@ test_vector_append_once (void)
 
 	vector_clear (v);
 	vector_append (v, &to_append);
-	ptr = vector_elem (v, 0);
+	ptr = vector_access (v, 0);
 
 	TEST_ASSERT_MESSAGE (ptr != NULL, "vector elem returned null after append");
 	TEST_ASSERT_MESSAGE ( *ptr == to_append, "vector append once failed");
@@ -50,7 +41,7 @@ test_vector_append_multiple (void)
 	/* check the locations */
 	for (i = 0; i < 10; i++)
 	{
-		ptr = vector_elem (v, i);
+		ptr = vector_access (v, i);
 		TEST_ASSERT_MESSAGE (ptr != NULL, "vector elem returned null after append");
 		TEST_ASSERT_MESSAGE (i == *ptr, "append multiple failed");
 	}
@@ -74,7 +65,7 @@ test_vector_append_large (void)
 	/* check the locations */
 	for (i = 0; i < 10000; i++)
 	{
-		ptr = vector_elem (v, i);
+		ptr = vector_access (v, i);
 		TEST_ASSERT_MESSAGE (ptr != NULL, "vector elem returned null after append");
 		TEST_ASSERT_MESSAGE (i == *ptr, "vector append large failed");
 	}
@@ -103,7 +94,7 @@ test_vector_replace (void)
 	/* check */
 	for (i = 0; i < 10000; i++)
 	{
-		ptr = vector_elem (v, i);
+		ptr = vector_access (v, i);
 		TEST_ASSERT_MESSAGE (data = *ptr, "vector replace small fail");
 	}
 }
@@ -125,7 +116,7 @@ test_vector_insert (void)
 	/* check */
 	for (i = 0; i < 10000; i++)
 	{
-		ptr = vector_elem (v, i);
+		ptr = vector_access (v, i);
 		printf ("value: %u\n", *ptr);
 		TEST_ASSERT_MESSAGE ((10000 - i - 1) == *ptr, "vector insert fail");
 	}
