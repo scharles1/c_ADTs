@@ -115,17 +115,18 @@ vector_insert (vector *v, const void *elem, int index)
 {
 	assert (v != NULL);
 	assert (elem != NULL);
-	void *from, *to;
+	void *insert_at, *next;
 
 	if (v->n_elems == v->capacity)
 	{
 		vector_double_capacity (v);
 	}
 
-	from = ELEM_ACCESS (v, index);
-	to = ELEM_ACCESS (v, index + 1);
-	memmove (to, from, (v->n_elems - index) * (v->elem_sz));
-	memcpy (from, elem, v->elem_sz);
+	insert_at = ELEM_ACCESS (v, index);
+	next = ELEM_ACCESS (v, index + 1);
+
+	memmove (next, insert_at, (v->n_elems - index) * (v->elem_sz));
+	memcpy (insert_at, elem, v->elem_sz);
 
 	++v->n_elems;
 }
