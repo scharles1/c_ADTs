@@ -92,6 +92,14 @@ void vector_append (vector *v, const void *elem);
 void vector_replace (vector *v, const void *elem, int index);
 
 /**
+ * Function: vector_clear
+ * Usage: vector_clear (v)
+ * ------------------------------------------------------
+ * Clears the vector and destroys all internal contents 
+ */
+void vector_clear (vector *v);
+
+/**
  * Function: vector_search
  * Usage: int i = vector_search (v, &elem, cmp_func)
  * ------------------------------------------------------
