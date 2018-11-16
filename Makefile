@@ -1,59 +1,90 @@
-#### Start of system configuration section. ####
-
-srcdir = ./source
-incdir = ./include
-CFLAGS = -I./ -I../ 
-CXX = g++ -std=gnu++11 $(CFLAGS)
-CDEBUG = -g
-LDFLAGS = -Wall -g -pthread -lrt
-
-#### End of system configuration section. ####
-# identify the .c source files 
-csrc =  ./src/CAN_utils.c
-csrc += ./src/CO_message.c
-csrc += ./src/RT_utils.c
-csrc += ./src/motor.c
-
-# idenfity the .cc source files
-ccsrc =  ./src/caster.cc
-ccsrc += ./src/vehicle.cc
-
-# add target specific files
-vehicle_src 				= ./src/main.cc
-calibrate_src 			= ./src/calibrate.cc
-canDump_motor_src		= ./src/canDump_motor.cc
-
-# general object files
-obj =  $(csrc:.c=.o) $(ccsrc:.cc=.o) 
-
-#target specific object files
-vehicle_obj   = 		$(obj) $(vehicle_src:.cc=.o) 
-calibrate_obj = 		$(obj) $(calibrate_src:.cc=.o) 
-canDump_motor_obj = $(obj) $(canDump_motor_src:.cc=.o) 
-
-all_obj = $(obj) ./src/main.o ./src/calibrate.o ./src/canDump_motor.o ./src/joystick.o
-
-# build targets
-vehicle: $(vehicle_obj)
-	$(CXX) -o $@ $^ $(LDFLAGS)
-
-calibrate: $(calibrate_obj)
-	$(CXX) -o $@ $^ $(LDFLAGS)
-
-canDump_motor: $(canDump_motor_obj)
-	$(CXX) -o $@ $^ $(LDFLAGS)
-
-test: $(obj)
-	$(CXX) -o $@ $^ $(LDFLAGS)
-
-joystick: ./src/joystick.o
-	$(CXX) -o $@ $^ $(LDFLAGS)
+ifeq ($(OS),Windows_NT)
+  ifeq ($(shell uname -s),) # not in a bash-like shell
+	CLEANUP = del /F /Q
+	MKDIR = mkdir
+  else # in a bash-like shell, like msys
+	CLEANUP = rm -f
+	MKDIR = mkdir -p
+  endif
+	TARGET_EXTENSION=.exe
+else
+	CLEANUP = rm -f
+	MKDIR = mkdir -p
+	TARGET_EXTENSION=out
+endif
 
 .PHONY: clean
+.PHONY: test
+
+PATHU = unity/src/
+PATHS = src/
+PATHI = include/
+PATHT = test/
+PATHB = build/
+PATHD = build/depends/
+PATHO = build/objs/
+PATHR = build/results/
+
+BUILD_PATHS = $(PATHB) $(PATHD) $(PATHO) $(PATHR)
+
+SRCT = $(wildcard $(PATHT)*.c)
+
+COMPILE=gcc -c
+LINK=gcc
+DEPEND=gcc -MM -MG -MF
+CFLAGS=-I. -I$(PATHU) -I$(PATHS) -I$(PATHI) -DTEST
+
+RESULTS = $(patsubst $(PATHT)Test%.c,$(PATHR)Test%.txt,$(SRCT) )
+
+PASSED = `grep -s PASS $(PATHR)*.txt`
+FAIL = `grep -s FAIL $(PATHR)*.txt`
+IGNORE = `grep -s IGNORE $(PATHR)*.txt`
+
+test: $(BUILD_PATHS) $(RESULTS)
+	@echo "-----------------------\nIGNORES:\n-----------------------"
+	@echo "$(IGNORE)"
+	@echo "-----------------------\nFAILURES:\n-----------------------"
+	@echo "$(FAIL)"
+	@echo "-----------------------\nPASSED:\n-----------------------"
+	@echo "$(PASSED)"
+	@echo "\nDONE"
+
+$(PATHR)%.txt: $(PATHB)%.$(TARGET_EXTENSION)
+	-./$< > $@ 2>&1
+
+$(PATHB)Test%.$(TARGET_EXTENSION): $(PATHO)Test%.o $(PATHO)%.o $(PATHU)unity.o #$(PATHD)Test%.d
+	$(LINK) -o $@ $^
+
+$(PATHO)%.o:: $(PATHT)%.c
+	$(COMPILE) $(CFLAGS) $< -o $@
+
+$(PATHO)%.o:: $(PATHS)%.c
+	$(COMPILE) $(CFLAGS) $< -o $@
+
+$(PATHO)%.o:: $(PATHU)%.c $(PATHU)%.h
+	$(COMPILE) $(CFLAGS) $< -o $@
+
+$(PATHD)%.d:: $(PATHT)%.c
+	$(DEPEND) $@ $<
+
+$(PATHB):
+	$(MKDIR) $(PATHB)
+
+$(PATHD):
+	$(MKDIR) $(PATHD)
+
+$(PATHO):
+	$(MKDIR) $(PATHO)
+
+$(PATHR):
+	$(MKDIR) $(PATHR)
+
 clean:
-	rm -f $(all_obj)
-	rm -f vehicle 
-	rm -f calibrate
-	rm -f canDump_motor
-	rm -f joystick
-	rm -f test
+	$(CLEANUP) $(PATHO)*.o
+	$(CLEANUP) $(PATHB)*.$(TARGET_EXTENSION)
+	$(CLEANUP) $(PATHR)*.txt
+
+.PRECIOUS: $(PATHB)Test%.$(TARGET_EXTENSION)
+.PRECIOUS: $(PATHD)%.d
+.PRECIOUS: $(PATHO)%.o
+.PRECIOUS: $(PATHR)%.txt

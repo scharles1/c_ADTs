@@ -7,6 +7,9 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <stdlib.h>
+#include <stdbool.h>
+
 /**
  * Type: vector
  * ------------------------------------------------------
@@ -18,6 +21,12 @@ typedef struct vector_implementation vector;
  * ------------------------------------------------------
  */
 typedef void (*elem_destroy_fn) (void *addr);
+
+/**
+ * Type: compare_fn
+ * ------------------------------------------------------
+ */
+typedef int (*compare_fn) (const void *elem1, const void *elem2);
 
 /**
  * Function: vector_init
@@ -81,5 +90,25 @@ void vector_insert (vector *v, const void *elem);
  * by copy.
  */
 void vector_replace (vector *v, const void *elem, int index);
+
+/**
+ * Function: vector_search
+ * Usage: int i = vector_search (v, &elem, cmp_func)
+ * ------------------------------------------------------
+ * Searches the vector for an element that matches the data pointed to by key.
+ * The sorted variable controls the search method. If the vector is sorted, a 
+ * binary search is used. Otherwise a linear search is used.
+ */
+int vector_search (const vector *v, const void *key, compare_fn fn, bool sorted);
+
+/**
+ * Function: vector_sort
+ * Usage: vector_sort (v, cmp_func)
+ * ------------------------------------------------------
+ * Searches the vector for an element that matches the data pointed to by key.
+ * The sorted variable controls the search method. If the vector is sorted, a 
+ * binary search is used. Otherwise a linear search is used.
+ */
+void vector_sort (vector *v, compare_fn fn);
 
 #endif /* VECTOR_H */
