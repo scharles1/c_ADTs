@@ -134,7 +134,6 @@ main(void)
 {
 	UNITY_BEGIN ();
 	RUN_TEST (test_vector_init);
-	RUN_TEST (test_vector_invalid_elem_access);
 	RUN_TEST (test_vector_append_once);
 	RUN_TEST (test_vector_append_multiple);
 	RUN_TEST (test_vector_append_large);
