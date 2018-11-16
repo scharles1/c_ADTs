@@ -2,6 +2,7 @@
 build/*
 
 # ignore unity framework
+unity/
 unity/*
 
 # other files
