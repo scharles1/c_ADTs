@@ -80,6 +80,57 @@ test_vector_append_large (void)
 	}
 }
 
+static void
+test_vector_replace (void)
+{
+	unsigned i, data = 0xdeadbeef;
+	unsigned *ptr;
+
+	vector_clear (v);
+
+	/* write a lot of times into vector */
+	for (i = 0; i < 10000; i++)
+	{
+		vector_append (v, &i);
+	}
+
+	/* no replace those values */
+	for (i = 0; i < 10000; i++)
+	{
+		vector_replace (v, &data, i);
+	}
+
+	/* check */
+	for (i = 0; i < 10000; i++)
+	{
+		ptr = vector_elem (v, i);
+		TEST_ASSERT_MESSAGE (data = *ptr, "vector replace small fail");
+	}
+}
+
+static void
+test_vector_insert (void)
+{
+	unsigned i;
+	unsigned *ptr;
+
+	vector_clear (v);
+
+	/* insert into front */
+	for (i = 0; i < 10000; i++)
+	{
+		vector_insert (v, &i, 0);
+	}
+
+	/* check */
+	for (i = 0; i < 10000; i++)
+	{
+		ptr = vector_elem (v, i);
+		printf ("value: %u\n", *ptr);
+		TEST_ASSERT_MESSAGE ((10000 - i - 1) == *ptr, "vector insert fail");
+	}
+}
+
 static void 
 test_vector_destroy (void)
 {
@@ -96,6 +147,8 @@ main(void)
 	RUN_TEST (test_vector_append_once);
 	RUN_TEST (test_vector_append_multiple);
 	RUN_TEST (test_vector_append_large);
+	RUN_TEST (test_vector_replace);
+	RUN_TEST (test_vector_insert);
 	RUN_TEST (test_vector_destroy);
 	return UNITY_END ();
 }

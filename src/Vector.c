@@ -115,7 +115,19 @@ vector_insert (vector *v, const void *elem, int index)
 {
 	assert (v != NULL);
 	assert (elem != NULL);
-	return;
+	void *from, *to;
+
+	if (v->n_elems == v->capacity)
+	{
+		vector_double_capacity (v);
+	}
+
+	from = ELEM_ACCESS (v, index);
+	to = ELEM_ACCESS (v, index + 1);
+	memmove (to, from, (v->n_elems - index) * (v->elem_sz));
+	memcpy (from, elem, v->elem_sz);
+
+	++v->n_elems;
 }
 
 /**
@@ -146,7 +158,18 @@ vector_append (vector *v, const void *elem)
 void 
 vector_replace (vector *v, const void *elem, int index)
 {
-	return;
+	assert (v != NULL);
+	assert (elem != NULL);
+	assert (index < v->n_elems);
+	void *to_replace;
+
+	to_replace = ELEM_ACCESS (v, index);
+	if (v->elem_destroy)
+	{
+		v->elem_destroy (to_replace);
+	}
+
+	memcpy (to_replace, elem, v->elem_sz);
 }
 
 /**
