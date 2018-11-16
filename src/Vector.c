@@ -4,6 +4,7 @@
  * ----------------------
  */
 #include "Vector.h"
+#include <assert.h>
 
 #define DEFAULT_CAPACITY 16
 
@@ -15,7 +16,7 @@ struct vector_implementation
 {
 	void *elems;
 	size_t capacity;
-	size_t elemsz;
+	size_t elem_sz;
 	size_t n_elems;
 	elem_destroy_fn elem_destroy;
 };
@@ -27,8 +28,21 @@ struct vector_implementation
 vector *
 vector_init (size_t elem_sz, size_t capacity_hint, elem_destroy_fn fn)
 {
-	size_t capacity;
+	assert (elem_sz > 0);
 	vector *v;
+
+	/* allocate space for the vector object */
+	v = (vector *)malloc (sizeof (vector));
+	assert (v != NULL);
+
+	/* allocate space for the elements in the vector */
+	v->capacity = (capacity_hint == 0) ? DEFAULT_CAPACITY : capacity_hint;
+	v->elems = malloc (v->capacity * elem_sz);
+	assert (v->elems != NULL);
+
+	v->elem_sz = elem_sz;
+	v->n_elems = 0;
+	v->elem_destroy = fn;
 
 	return v;
 }
@@ -40,7 +54,19 @@ vector_init (size_t elem_sz, size_t capacity_hint, elem_destroy_fn fn)
 void 
 vector_destroy (vector *v)
 {
-	return;
+	assert (v != NULL);
+	size_t i;
+
+	if (v->elem_destroy)
+	{
+		for (i = 0; i < v->n_elems; i++)
+		{
+			v->elem_destroy (vector_elem (v, i));
+		}
+	}
+
+	free (v->elems);
+	free (v);
 }
 
 /**
@@ -50,7 +76,8 @@ vector_destroy (vector *v)
 size_t 
 vector_size (vector *v)
 {
-	return 0;
+	assert (v != NULL)
+	return v->n_elems;
 }
 
 /**
