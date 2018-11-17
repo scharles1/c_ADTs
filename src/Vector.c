@@ -1,5 +1,5 @@
 /**
- * File: vector.c
+ * File: Vector.c
  * Author: Seth Charles
  * ----------------------
  */

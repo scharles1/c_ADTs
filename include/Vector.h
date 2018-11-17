@@ -1,5 +1,5 @@
 /** 
- * File: vector.h
+ * File: Vector.h
  * ------------------------------------------------------
  * Defines the interface for the vector type. This implements the standard
  * ADT vector that acts as a resizeable array.
