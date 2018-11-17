@@ -143,6 +143,12 @@ vector_access (vector *v, int index)
 /**
  * Function: vector_insert
  * ------------------------------------------------------
+ * Inserts an element at the provided index. Shifts all later elements back by
+ * one element space to create space for the new element.
+ *
+ * param v     - initialized vector
+ * param elem  - a pointer to the new element data to insert by copy
+ * param index - the index to insert at
  */
 void 
 vector_insert (vector *v, const void *elem, int index)
