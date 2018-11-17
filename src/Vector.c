@@ -177,6 +177,12 @@ vector_insert (vector *v, const void *elem, int index)
  * Function: vector_remove
  * Usage: vector_remove (v, 0)
  * ------------------------------------------------------
+ * Removes an element at the provided index. Shifts all later elements up by
+ * one element space to fill the whole. The cleanup function is called on 
+ * the removed element.
+ *
+ * param v     - initialized vector
+ * param index - the index to remove at
  */
 void 
 vector_remove (vector *v, int index)
@@ -201,6 +207,10 @@ vector_remove (vector *v, int index)
 /**
  * Function: vector_append
  * ------------------------------------------------------
+ * Appends an element to the end of the vector.
+ *
+ * param v    - initialized vector
+ * param elem - a pointer to the new element data to append by copy
  */
 void 
 vector_append (vector *v, const void *elem)
