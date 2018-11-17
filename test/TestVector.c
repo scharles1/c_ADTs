@@ -30,6 +30,19 @@ vector_init_linear (size_t n, bool ascending)
 	}
 }
 
+static void
+vector_init_random (size_t n, size_t max)
+{
+	unsigned i;
+
+	vector_clear (v);
+	for (i = 0; i < n; i++)
+	{
+		n = (unsigned)(rand() % max);
+		vector_append (v, &n);
+	}
+}
+
 static void 
 test_vector_init (void)
 {
@@ -146,7 +159,17 @@ test_vector_bsearch (void)
 static void
 test_vector_lsearch (void)
 {
-	
+	unsigned i, key = 101;
+	unsigned *ptr1, *ptr2;
+
+	vector_init_random (1000, 100);
+	ptr1 = vector_search (v, &key, compare_unsigned, false);
+	TEST_ASSERT_MESSAGE (ptr1 == NULL, "vector linear search failed");
+
+	vector_append (v, &key);
+	ptr1 = vector_search (v, &key, compare_unsigned, false);
+	ptr2 = vector_access (v, vector_size (v) - 1);
+	TEST_ASSERT_MESSAGE (ptr1 == ptr2, "vector linear search failed");
 }
 
 static void 
@@ -159,6 +182,11 @@ test_vector_destroy (void)
 int 
 main(void)
 {
+	time_t t;
+
+	/* Intializes random number generator */
+	srand((unsigned) time(&t));
+
 	UNITY_BEGIN ();
 	RUN_TEST (test_vector_init);
 	RUN_TEST (test_vector_append_once);
@@ -167,6 +195,7 @@ main(void)
 	RUN_TEST (test_vector_replace);
 	RUN_TEST (test_vector_insert);
 	RUN_TEST (test_vector_bsearch);
+	RUN_TEST (test_vector_lsearch);
 	RUN_TEST (test_vector_destroy);
 	return UNITY_END ();
 }
