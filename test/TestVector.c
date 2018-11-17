@@ -33,13 +33,13 @@ vector_init_linear (size_t n, bool ascending)
 static void
 vector_init_random (size_t n, size_t max)
 {
-	unsigned i;
+	unsigned i, to_append;
 
 	vector_clear (v);
 	for (i = 0; i < n; i++)
 	{
-		n = (unsigned)(rand() % max);
-		vector_append (v, &n);
+		to_append = (unsigned)(rand() % max);
+		vector_append (v, &to_append);
 	}
 }
 
@@ -172,6 +172,24 @@ test_vector_lsearch (void)
 	TEST_ASSERT_MESSAGE (ptr1 == ptr2, "vector linear search failed");
 }
 
+static void
+test_vector_sort (void)
+{
+	unsigned i, min = 0;;
+	unsigned *cur, *prev = &min;
+
+	vector_init_random (1000, 1000);
+	vector_sort (v, compare_unsigned);
+
+	for (i = 0; i < 1000; i++)
+	{
+		cur = vector_access (v, i);
+		TEST_ASSERT_MESSAGE (*prev <= *cur, "vector sort not sorted correctly");
+		prev = cur;
+	}
+
+}
+
 static void 
 test_vector_destroy (void)
 {
@@ -196,6 +214,7 @@ main(void)
 	RUN_TEST (test_vector_insert);
 	RUN_TEST (test_vector_bsearch);
 	RUN_TEST (test_vector_lsearch);
+	RUN_TEST (test_vector_sort);
 	RUN_TEST (test_vector_destroy);
 	return UNITY_END ();
 }
