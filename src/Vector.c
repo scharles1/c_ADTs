@@ -232,6 +232,12 @@ vector_append (vector *v, const void *elem)
 /**
  * Function: vector_replace
  * ------------------------------------------------------
+ * Replaces an element at the provided index. The data at elem is copied into 
+ * the vector at the index and the old element is destroyed.
+ *
+ * param v     - initialized vector
+ * param elem  - a pointer to the new element data to replace by copy
+ * param index - the index to replace
  */
 void 
 vector_replace (vector *v, const void *elem, int index)
