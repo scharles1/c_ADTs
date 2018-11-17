@@ -3,6 +3,33 @@
 
 static vector *v;
 
+static int compare_unsigned (const void *elem1, const void *elem2)
+{
+	const unsigned *ptr1 = elem1;
+	const unsigned *ptr2 = elem2;
+
+	return (int)(*ptr1 - *ptr2);
+}
+
+static void
+vector_init_linear (size_t n, bool ascending)
+{
+	unsigned i;
+
+	vector_clear (v);
+	for (i = 0; i < n; i++)
+	{
+		if (ascending)
+		{
+			vector_append (v, &i);
+		}
+		else
+		{
+			vector_insert (v, &i, 0);
+		}
+	}
+}
+
 static void 
 test_vector_init (void)
 {
@@ -30,13 +57,8 @@ test_vector_append_multiple (void)
 	unsigned i;
 	unsigned *ptr;
 
-	vector_clear (v);
-
 	/* write multiple times into vector */
-	for (i = 0; i < 10; i++)
-	{
-		vector_append (v, &i);
-	}
+	vector_init_linear (10, true);
 
 	/* check the locations */
 	for (i = 0; i < 10; i++)
@@ -53,14 +75,8 @@ test_vector_append_large (void)
 	unsigned i;
 	unsigned *ptr;
 
-	vector_clear (v);
-
 	/* write a lot of times into vector */
-	for (i = 0; i < 10000; i++)
-	{
-		TEST_ASSERT_MESSAGE (vector_size (v) == i, "vector append large wrong size");
-		vector_append (v, &i);
-	}
+	vector_init_linear (10000, true);
 
 	/* check the locations */
 	for (i = 0; i < 10000; i++)
@@ -77,15 +93,10 @@ test_vector_replace (void)
 	unsigned i, data = 0xdeadbeef;
 	unsigned *ptr;
 
-	vector_clear (v);
-
 	/* write a lot of times into vector */
-	for (i = 0; i < 10000; i++)
-	{
-		vector_append (v, &i);
-	}
+	vector_init_linear (10000, true);
 
-	/* no replace those values */
+	/* now replace those values */
 	for (i = 0; i < 10000; i++)
 	{
 		vector_replace (v, &data, i);
@@ -95,7 +106,7 @@ test_vector_replace (void)
 	for (i = 0; i < 10000; i++)
 	{
 		ptr = vector_access (v, i);
-		TEST_ASSERT_MESSAGE (data = *ptr, "vector replace small fail");
+		TEST_ASSERT_MESSAGE (data = *ptr, "vector replace fail");
 	}
 }
 
@@ -107,11 +118,8 @@ test_vector_insert (void)
 
 	vector_clear (v);
 
-	/* insert into front */
-	for (i = 0; i < 10000; i++)
-	{
-		vector_insert (v, &i, 0);
-	}
+	/* insert into front with linear init function */
+	vector_init_linear (10000, false);
 
 	/* check */
 	for (i = 0; i < 10000; i++)
@@ -119,6 +127,26 @@ test_vector_insert (void)
 		ptr = vector_access (v, i);
 		TEST_ASSERT_MESSAGE ((10000 - i - 1) == *ptr, "vector insert fail");
 	}
+}
+
+static void
+test_vector_bsearch (void)
+{
+	unsigned i, key = 497;
+	unsigned *ptr1, *ptr2;
+
+	vector_init_linear (1000, true);
+
+	ptr1 = vector_search (v, &key, compare_unsigned, true);
+	ptr2 = vector_access (v, key);
+	TEST_ASSERT_MESSAGE (ptr1 == ptr2, "vector binary search failed");
+	TEST_ASSERT_MESSAGE (*ptr1 = key, "vector binary search failed");
+}
+
+static void
+test_vector_lsearch (void)
+{
+	
 }
 
 static void 
@@ -138,6 +166,7 @@ main(void)
 	RUN_TEST (test_vector_append_large);
 	RUN_TEST (test_vector_replace);
 	RUN_TEST (test_vector_insert);
+	RUN_TEST (test_vector_bsearch);
 	RUN_TEST (test_vector_destroy);
 	return UNITY_END ();
 }

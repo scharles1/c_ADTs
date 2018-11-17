@@ -137,13 +137,13 @@ void vector_clear (vector *v);
 
 /**
  * Function: vector_search
- * Usage: int i = vector_search (v, &elem, cmp_func)
+ * Usage: void *ptr = vector_search (v, &elem, cmp_func)
  * ------------------------------------------------------
  * Searches the vector for an element that matches the data pointed to by key.
  * The sorted variable controls the search method. If the vector is sorted, a 
  * binary search is used. Otherwise a linear search is used.
  */
-int vector_search (const vector *v, const void *key, compare_fn fn, bool sorted);
+void *vector_search (const vector *v, const void *key, compare_fn fn, bool sorted);
 
 /**
  * Function: vector_sort

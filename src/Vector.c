@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
+#include <search.h>
 
 #define DEFAULT_CAPACITY       (16UL)
 #define GET_PTR_ELEM(V, INDEX) ((char *)(V->elems) + ((INDEX) * (V->elem_sz)))
@@ -225,10 +226,25 @@ vector_clear (vector *v)
  * Function: vector_search
  * ------------------------------------------------------
  */
-int 
+void *
 vector_search (const vector *v, const void *key, compare_fn fn, bool sorted)
 {
-	return 0;
+	assert (v != NULL);
+	assert (key != NULL);
+	void *ptr;
+
+	size_t n_elems = v->n_elems;
+
+	if (sorted) /* binary search */
+	{
+		ptr = bsearch (key, v->elems, v->n_elems, v->elem_sz, fn);
+	}
+	else /* linear search */
+	{
+		ptr = lfind (key, v->elems, &n_elems, v->elem_sz, fn);
+	}
+
+	return ptr;
 }
 
 /**
@@ -238,5 +254,5 @@ vector_search (const vector *v, const void *key, compare_fn fn, bool sorted)
 void 
 vector_sort (vector *v, compare_fn fn)
 {
-	return;
+	qsort (v->elems, v->n_elems, v->elem_sz, fn);
 }
