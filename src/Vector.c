@@ -122,7 +122,12 @@ vector_size (const vector *v)
 /**
  * Function: vector_access
  * ------------------------------------------------------
- * 
+ * Provides a pointer to the vector element corresponding the provided index
+ *
+ * param v     - initialized vector
+ * param index - the index to access
+ *
+ * returns     - a pointer the corresponding index in the vector
  */
 void *
 vector_access (vector *v, int index)
