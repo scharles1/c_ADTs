@@ -321,6 +321,11 @@ vector_search (const vector *v, const void *key, compare_fn fn, bool sorted)
 /**
  * Function: vector_sort
  * ------------------------------------------------------
+ * Sorts the provided vector according to the provided compare function. Uses
+ * the quicksort algorithm.
+ *
+ * param v  - initialized vector
+ * param fn - the provided compare function for sorting
  */
 void 
 vector_sort (vector *v, compare_fn fn)
