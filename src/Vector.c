@@ -263,7 +263,7 @@ vector_replace (vector *v, const void *elem, int index)
  * on each element. After calling this the vector has 0 elements. It's previous
  * storage capacity is not modified.
  *
- * param v     - initialized vector
+ * param v - initialized vector
  */
 void 
 vector_clear (vector *v)
@@ -285,6 +285,17 @@ vector_clear (vector *v)
 /**
  * Function: vector_search
  * ------------------------------------------------------
+ * Searches the vector for an element matching the key utilizing the provided
+ * compare function. The sorted flag controls whether to use a binary search on
+ * an already sorted vector verses a linear search on an unsorted vector.
+ *
+ * param v      - initialized vector
+ * param key    - a pointer to the data to find in the vector
+ * param fn     - a compare function for searching
+ * param sorted - a flag provided to control signal whether the vector is sorted
+ *
+ * returns - a pointer to the matching vector element or NULL if it doesn't 
+ *           contain the key
  */
 void *
 vector_search (const vector *v, const void *key, compare_fn fn, bool sorted)
