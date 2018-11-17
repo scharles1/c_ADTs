@@ -15,6 +15,14 @@
 /**
  * Struct: vector_implementation
  * ----------------------------------
+ * The private vector implementation
+ *
+ * field elems        - the start of the array of elements
+ * field capacity     - the current number of elements the vector can hold
+ * field elem_sz      - the size of elements in bytes the vector stores
+ * field n_elems      - the current number of elements stored in the vector
+ * field elem_destroy - the function to call on the vector elements to destroy
+ *                       on clean up
  */
 struct vector_implementation
 {
@@ -28,6 +36,9 @@ struct vector_implementation
 /**
  * Function: vector_double_capacity
  * ------------------------------------------------------
+ * Module function to handle dynamic resize of a vector's capacity
+ * 
+ * param v - a pointer to the vector to resize
  */
 static void
 vector_double_capacity (vector *v)
@@ -45,6 +56,13 @@ vector_double_capacity (vector *v)
 /**
  * Function: vector_init
  * ------------------------------------------------------
+ * Public function to perform vector initialization
+ *
+ * param elem_sz       - the size of elements in bytes that are stored
+ * param capacity_hint - a capacity suggestion for initialization
+ * param fn            - the cleanup function to call when an element is destroyed
+ *
+ * returns - a pointer to the vector object
  */
 vector *
 vector_init (size_t elem_sz, size_t capacity_hint, elem_destroy_fn fn)
@@ -70,6 +88,10 @@ vector_init (size_t elem_sz, size_t capacity_hint, elem_destroy_fn fn)
 /**
  * Function: vector_destroy
  * ------------------------------------------------------
+ * Destroys the vector and deallocates all the memory used for the vector. Also
+ * calls the provided element destroy function on individual elements.
+ *
+ * param v - the vector to destroy
  */
 void 
 vector_destroy (vector *v)
@@ -84,6 +106,11 @@ vector_destroy (vector *v)
 /**
  * Function: vector_size
  * ------------------------------------------------------
+ * Returns the current number of elements stored in the vector.
+ *
+ * param v - initialized vector
+ *
+ * returns - number of elements stored in the vector
  */
 size_t 
 vector_size (const vector *v)
@@ -95,6 +122,7 @@ vector_size (const vector *v)
 /**
  * Function: vector_access
  * ------------------------------------------------------
+ * 
  */
 void *
 vector_access (vector *v, int index)
