@@ -259,6 +259,11 @@ vector_replace (vector *v, const void *elem, int index)
 /**
  * Function: vector_clear
  * ------------------------------------------------------
+ * Internally clears the entire vector and calls the provided destroy fuction
+ * on each element. After calling this the vector has 0 elements. It's previous
+ * storage capacity is not modified.
+ *
+ * param v     - initialized vector
  */
 void 
 vector_clear (vector *v)
