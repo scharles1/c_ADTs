@@ -69,7 +69,7 @@ void vector_destroy (vector *v);
  * Asserts: null pointer
  * Assumes: valid initialized vector pointer
  */
-size_t vector_size (vector *v);
+size_t vector_size (const vector *v);
 
 /**
  * Function: vector_access

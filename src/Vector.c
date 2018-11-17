@@ -86,7 +86,7 @@ vector_destroy (vector *v)
  * ------------------------------------------------------
  */
 size_t 
-vector_size (vector *v)
+vector_size (const vector *v)
 {
 	assert (v != NULL);
 	return v->n_elems;

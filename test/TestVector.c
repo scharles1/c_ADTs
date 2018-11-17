@@ -31,7 +31,7 @@ vector_init_linear (size_t n, bool ascending)
 }
 
 static void
-vector_init_random (size_t n, size_t max)
+vector_init_random (vector *v, size_t n, size_t max)
 {
 	unsigned i, to_append;
 
@@ -162,7 +162,7 @@ test_vector_lsearch (void)
 	unsigned i, key = 101;
 	unsigned *ptr1, *ptr2;
 
-	vector_init_random (1000, 100);
+	vector_init_random (v, 1000, 100);
 	ptr1 = vector_search (v, &key, compare_unsigned, false);
 	TEST_ASSERT_MESSAGE (ptr1 == NULL, "vector linear search failed");
 
@@ -178,7 +178,7 @@ test_vector_sort (void)
 	unsigned i, min = 0;;
 	unsigned *cur, *prev = &min;
 
-	vector_init_random (1000, 1000);
+	vector_init_random (v, 1000, 1000);
 	vector_sort (v, compare_unsigned);
 
 	for (i = 0; i < 1000; i++)
@@ -195,6 +195,72 @@ test_vector_destroy (void)
 {
 	vector_destroy (v);
 	TEST_ASSERT_MESSAGE (0 == 0, "vector destroy should pass");
+}
+
+static int 
+vector_size_compare (const void *elem1, const void *elem2)
+{
+	vector * const *v1 = elem1;
+	vector * const *v2 = elem2;
+
+	return (int)(vector_size (*v1) - vector_size (*v2));
+}
+
+static void 
+complex_vector_destroy (void *addr)
+{
+	vector **p_v = addr;
+	vector_destroy (*p_v);
+}
+
+static void
+test_complex_vector (void)
+{
+	unsigned i, j, min = 0;
+	unsigned *cur, *prev;
+	vector *v_vectors, *p_v;
+
+	/* initialize vector of vectors */
+	v_vectors = vector_init (sizeof (vector *), 0, complex_vector_destroy);
+
+	/* populate with vectors of integers */
+	for (i = 0; i < 100; i++)
+	{
+		p_v = vector_init (sizeof (unsigned), 0, NULL);
+		vector_init_random (p_v, (size_t)(rand() % 100), 100);
+		vector_append (v_vectors, &p_v);
+	}
+
+	/* sort each vector inside the complex vector and verify */
+	for (i = 0; i < vector_size (v_vectors); i++)
+	{
+		p_v = *(vector **)(vector_access (v_vectors, i));
+		vector_sort (p_v, compare_unsigned);
+
+		prev = &min;
+		for (j = 0; j < vector_size (p_v); j++)
+		{
+			cur = vector_access (p_v, j);
+			TEST_ASSERT_MESSAGE (*prev <= *cur, "vector sort not sorted correctly");
+			prev = cur;
+		}
+	}
+
+	/* sort the vector of vectors by length (shortest first) */
+	vector_sort (v_vectors, vector_size_compare);
+	
+	/* verify shortest vector first */
+	size_t prev_len = 0, cur_len;
+	for (i = 0; i < vector_size (v_vectors); i++)
+	{
+		p_v = *(vector **)(vector_access (v_vectors, i));
+		cur_len = vector_size (p_v);
+
+		TEST_ASSERT_MESSAGE (prev_len <= cur_len, "vector sort of complex vector failed");
+		prev_len = cur_len;
+	}
+
+	vector_destroy (v_vectors);
 }
 
 int 
@@ -216,5 +282,6 @@ main(void)
 	RUN_TEST (test_vector_lsearch);
 	RUN_TEST (test_vector_sort);
 	RUN_TEST (test_vector_destroy);
+	RUN_TEST (test_complex_vector);
 	return UNITY_END ();
 }
