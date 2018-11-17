@@ -6,8 +6,9 @@
 #include "Vector.h"
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 
-#define DEFAULT_CAPACITY       (16)
+#define DEFAULT_CAPACITY       (16UL)
 #define GET_PTR_ELEM(V, INDEX) ((char *)(V->elems) + ((INDEX) * (V->elem_sz)))
 
 /**
@@ -31,9 +32,12 @@ static void
 vector_double_capacity (vector *v)
 {
 	void *larger;
-	larger = realloc (v->elems, v->capacity * 2);
+	size_t new_capacity =  v->capacity * 2;
+
+	larger = realloc (v->elems, new_capacity * v->elem_sz);
 	assert (larger != NULL);
 
+	v->capacity = new_capacity;
 	v->elems = larger;
 }
 
@@ -44,7 +48,6 @@ vector_double_capacity (vector *v)
 vector *
 vector_init (size_t elem_sz, size_t capacity_hint, elem_destroy_fn fn)
 {
-	assert (elem_sz > 0);
 	vector *v;
 
 	/* allocate space for the vector object */
@@ -166,7 +169,7 @@ vector_append (vector *v, const void *elem)
 	assert (elem != NULL);
 	void *next_elem;
 
-	if (v->n_elems == v->capacity)
+	if (v->capacity <= v->n_elems)
 	{
 		vector_double_capacity (v);
 	}

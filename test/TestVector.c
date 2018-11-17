@@ -6,7 +6,7 @@ static vector *v;
 static void 
 test_vector_init (void)
 {
-	v = vector_init (sizeof (unsigned), 0, NULL);
+	v = vector_init (sizeof (unsigned), 200, NULL);
 	TEST_ASSERT_MESSAGE (v != NULL, "failed vector initialization");
 }
 
@@ -117,7 +117,6 @@ test_vector_insert (void)
 	for (i = 0; i < 10000; i++)
 	{
 		ptr = vector_access (v, i);
-		printf ("value: %u\n", *ptr);
 		TEST_ASSERT_MESSAGE ((10000 - i - 1) == *ptr, "vector insert fail");
 	}
 }

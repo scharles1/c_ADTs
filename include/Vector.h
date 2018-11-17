@@ -1,7 +1,8 @@
 /** 
  * File: vector.h
  * ------------------------------------------------------
- * Defines the interface for the vector type.
+ * Defines the interface for the vector type. This implements the standard
+ * ADT vector that acts as a resizeable array.
  */
 
 #ifndef VECTOR_H
@@ -13,18 +14,26 @@
 /**
  * Type: vector
  * ------------------------------------------------------
+ * The intention with this type is to hide the internals of the vector struct
+ * by defining the vector_implementation struct in the vector.c file. This 
+ * requires clients to use the prescribed API
  */
 typedef struct vector_implementation vector;
 
 /**
  * Type: elem_destroy_fn
  * ------------------------------------------------------
+ * The client can create vectors that hold complex objects. When adding an 
+ * object to the vector, the ownership of that object is transferred to the
+ * vector module and the necessary cleanup required when destroyed is done on
+ * each object via this function provided by the client.
  */
 typedef void (*elem_destroy_fn) (void *addr);
 
 /**
  * Type: compare_fn
  * ------------------------------------------------------
+ * Typedef for compare function used for sorting and searching.
  */
 typedef int (*compare_fn) (const void *elem1, const void *elem2);
 
@@ -44,6 +53,9 @@ vector *vector_init (size_t elem_sz, size_t capacity_hint, elem_destroy_fn fn);
  * Usage: vector_destroy (v)
  * ------------------------------------------------------
  * Destroys and frees all memory associated with vector
+ *
+ * Asserts: null pointer
+ * Assumes: valid initialized vector pointer
  */
 void vector_destroy (vector *v);
 
@@ -53,6 +65,9 @@ void vector_destroy (vector *v);
  * ------------------------------------------------------
  * Returns the number of elements in the vector. Not necessarily equal to the
  * storage capacity of the vector
+ *
+ * Asserts: null pointer
+ * Assumes: valid initialized vector pointer
  */
 size_t vector_size (vector *v);
 
@@ -61,6 +76,10 @@ size_t vector_size (vector *v);
  * Usage: void *elem = vector_access (v, 0)
  * ------------------------------------------------------
  * Returns a pointer to the element in the vector defined by index. 
+ *
+ * Asserts: null pointer
+ * Assumes: valid initialized vector pointer
+ *          valid index (index checking is left to the client's responsibility)
  */
 void *vector_access (vector *v, int index);
 
@@ -69,7 +88,11 @@ void *vector_access (vector *v, int index);
  * Usage: vector_insert (v, &elem, 0)
  * ------------------------------------------------------
  * Inserts the data pointed to by elem into the vector at the defined index.
- * This is done by copy.
+ * This is done by copy. All elements after index are shifted back by one.
+ *
+ * Asserts: null pointer (v, or elem), valid index
+ * Assumes: valid initialized vector pointer
+ *          valid elem pointer with data to copy into vector
  */
 void vector_insert (vector *v, const void *elem, int index);
 
@@ -87,7 +110,11 @@ void vector_remove (vector *v, int index);
  * Usage: vector_append (v, &elem)
  * ------------------------------------------------------
  * Appends the data pointed to by elem into the vector at the end. This is done
- * by copy. 
+ * by copy.
+ *
+ * Asserts: null pointer (v, or elem)
+ * Assumes: valid initialized vector pointer
+ *          valid elem pointer with data to copy into vector
  */
 void vector_append (vector *v, const void *elem);
 
