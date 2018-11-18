@@ -147,7 +147,8 @@ list_front (const list *l)
 	assert (l != NULL);
 	assert (l->magic == MAGIC_INIT_VALUE);
 
-	return ELEM_PTR_FROM_PREV (l->head);
+	void *to_return = ELEM_PTR_FROM_PREV (l->head);
+	return (l->head == (void **)&l->tail) ? NULL : to_return;
 }
 
 /**
@@ -160,7 +161,8 @@ list_back (const list *l)
 	assert (l != NULL);
 	assert (l->magic == MAGIC_INIT_VALUE);
 
-	return ELEM_PTR_FROM_NEXT (l->tail);
+	void *to_return = ELEM_PTR_FROM_NEXT (l->tail);
+	return (l->tail == (void **)&l->head) ? NULL : to_return;
 }
 
 /**
@@ -199,24 +201,16 @@ list_pop_back (list *l)
 	assert (l->magic == MAGIC_INIT_VALUE);
 	assert (l->n_elems > 0);
 
-	/* TODO: implement */
-}
+	list_elem *to_remove;
 
-void
-list_print (list *l)
-{
-	unsigned i = 0;
-	void **cur = l->head, **next;
+	to_remove = ELEM_PTR_FROM_NEXT (l->tail);
+	l->tail = *PREV_PTR_FROM_NEXT (l->tail);
+	*l->tail = (void *)&l->tail;
 
-	printf ("head ptr addr: %p, head ptr contents: %p\n", &l->head, l->head);
-
-	while (cur != (void **)&l->tail)
+	if (l->elem_destroy)
 	{
-		next = NEXT_PTR_FROM_PREV (cur);
-		printf ("node %u, prev ptr addr: %p, prev ptr contents: %p, next ptr addr: %p, next ptr contents: %p\n", i, cur, *cur, next, *next);
-		cur = *next;
-		i++;
+		l->elem_destroy (to_remove);
 	}
 
-	printf ("tail ptr addr: %p, tail ptr contents: %p\n", &l->tail, l->tail);
+	--l->n_elems;
 }
