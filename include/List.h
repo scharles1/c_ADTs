@@ -21,10 +21,10 @@
  * {
  *  	list_elem le;
  *  	unsigned data;
- * } my_node_t;
+ * } my_node;
  * 
  * list *l = list_init (NULL);
- * my_node_t to_insert;
+ * my_node to_insert;
  * to_insert->data = 0xdeadbeef;
  * list_push_front (l, &to_insert);
  */
