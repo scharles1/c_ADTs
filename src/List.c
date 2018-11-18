@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #define GET_PTR_ELEM(V, INDEX) ((char *)(V->elems) + ((INDEX) * (V->elem_sz)))
-
+#define MAGIC_INIT_VALUE       (0x739caf14a2d9e85f)
 /**
  * Struct: list_implementation
  * ----------------------------------
@@ -22,6 +22,7 @@ struct list_implementation
 	list_elem *head;
 	list_elem *tail;
 	size_t n_elems;
+	size_t magic;
 	elem_destroy_fn elem_destroy;
 	bool alloc_static;
 };
@@ -52,6 +53,7 @@ list_init_static (list *l, elem_destroy_fn fn)
 	l->n_elems = 0;
 	l->elem_destroy = fn;
 	l->alloc_static = true;
+	l->magic = MAGIC_INIT_VALUE;
 }
 
 /**
@@ -68,23 +70,20 @@ list_init (elem_destroy_fn fn)
 	l->n_elems = 0;
 	l->elem_destroy = fn;
 	l->alloc_static = false;
+	l->magic = MAGIC_INIT_VALUE;
 
 	return l;
 }
 
 /**
  * Function: list_destroy
- * Usage: list_destroy (l)
  * ------------------------------------------------------
- * Destroys and frees all memory associated with list
- *
- * Asserts: null pointer
- * Assumes: valid initialized vector pointer
  */
 void
 list_destroy (list *l)
 {
 	assert (l != NULL);
+	assert (l->magic = MAGIC_INIT_VALUE);
 
 	list_elem *l_elem, *l_elem_next;
 
@@ -103,4 +102,76 @@ list_destroy (list *l)
 	{
 		free (l);
 	}
+}
+
+/**
+ * Function: list_push_front
+ * ------------------------------------------------------
+ */
+void 
+list_push_front (list *l, void *new_node);
+{
+	assert (l != NULL);
+	assert (new_node != NULL);
+	assert (l->magic = MAGIC_INIT_VALUE);
+
+
+}
+
+/**
+ * Function: list_push_back
+ * ------------------------------------------------------
+ */
+void 
+list_push_back (list *l, void *new_node)
+{
+	assert (l != NULL);
+	assert (new_node != NULL);
+	assert (l->magic = MAGIC_INIT_VALUE);
+
+}
+
+/**
+ * Function: list_front
+ * ------------------------------------------------------
+ */
+void *
+list_front (list *l)
+{
+	assert (l != NULL);
+	assert (l->magic = MAGIC_INIT_VALUE);
+
+}
+
+/**
+ * Function: list_back
+ * ------------------------------------------------------
+ */
+void *
+list_back (list *l)
+{
+	assert (l != NULL);
+	assert (l->magic = MAGIC_INIT_VALUE);
+}
+
+/**
+ * Function: list_pop_front
+ * ------------------------------------------------------
+ */
+void 
+list_pop_front (list *l)
+{
+	assert (l != NULL);
+	assert (l->magic = MAGIC_INIT_VALUE);
+}
+
+/**
+ * Function: list_pop_back
+ * ------------------------------------------------------
+ */
+void 
+list_pop_back (list *l)
+{
+	assert (l != NULL);
+	assert (l->magic = MAGIC_INIT_VALUE);
 }
