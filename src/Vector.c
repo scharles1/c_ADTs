@@ -11,6 +11,7 @@
 
 #define DEFAULT_CAPACITY       (16UL)
 #define GET_PTR_ELEM(V, INDEX) ((char *)(V->elems) + ((INDEX) * (V->elem_sz)))
+#define MAGIC_INIT_VALUE       (0x739caf14a2d9e85f)
 
 /**
  * Struct: vector_implementation
@@ -30,6 +31,7 @@ struct vector_implementation
 	size_t capacity;
 	size_t elem_sz;
 	size_t n_elems;
+	size_t magic;
 	elem_destroy_fn elem_destroy;
 };
 
@@ -81,6 +83,7 @@ vector_init (size_t elem_sz, size_t capacity_hint, elem_destroy_fn fn)
 	v->elem_sz = elem_sz;
 	v->n_elems = 0;
 	v->elem_destroy = fn;
+	v->magic = MAGIC_INIT_VALUE;
 
 	return v;
 }
@@ -97,6 +100,7 @@ void
 vector_destroy (vector *v)
 {
 	assert (v != NULL);
+	assert (v->magic == MAGIC_INIT_VALUE);
 
 	vector_clear (v);
 	free (v->elems);
@@ -116,6 +120,8 @@ size_t
 vector_size (const vector *v)
 {
 	assert (v != NULL);
+	assert (v->magic == MAGIC_INIT_VALUE);
+
 	return v->n_elems;
 }
 
@@ -133,6 +139,8 @@ void *
 vector_access (vector *v, int index)
 {
 	assert (v != NULL);
+	assert (v->magic == MAGIC_INIT_VALUE);
+
 	void *ptr;
 
 	ptr = GET_PTR_ELEM (v, index);
@@ -155,6 +163,7 @@ vector_insert (vector *v, const void *elem, int index)
 {
 	assert (v != NULL);
 	assert (elem != NULL);
+	assert (v->magic == MAGIC_INIT_VALUE);
 	assert (index <= v->n_elems);
 
 	void *insert_at, *next;
@@ -188,6 +197,7 @@ void
 vector_remove (vector *v, int index)
 {
 	assert (v != NULL);
+	assert (v->magic == MAGIC_INIT_VALUE);
 	assert (index < v->n_elems);
 
 	void *remove_at, *next;
@@ -217,6 +227,7 @@ vector_append (vector *v, const void *elem)
 {
 	assert (v != NULL);
 	assert (elem != NULL);
+	assert (v->magic == MAGIC_INIT_VALUE);
 	void *next_elem;
 
 	if (v->capacity <= v->n_elems)
@@ -244,6 +255,7 @@ vector_replace (vector *v, const void *elem, int index)
 {
 	assert (v != NULL);
 	assert (elem != NULL);
+	assert (v->magic == MAGIC_INIT_VALUE);
 	assert (index < v->n_elems);
 	void *to_replace;
 
@@ -269,6 +281,7 @@ void
 vector_clear (vector *v)
 {
 	assert (v != NULL);
+	assert (v->magic == MAGIC_INIT_VALUE);
 	size_t i;
 
 	if (v->elem_destroy)
@@ -302,6 +315,7 @@ vector_search (const vector *v, const void *key, compare_fn fn, bool sorted)
 {
 	assert (v != NULL);
 	assert (key != NULL);
+	assert (v->magic == MAGIC_INIT_VALUE);
 	void *ptr;
 
 	size_t n_elems = v->n_elems;
@@ -330,5 +344,8 @@ vector_search (const vector *v, const void *key, compare_fn fn, bool sorted)
 void 
 vector_sort (vector *v, compare_fn fn)
 {
+	assert (v != NULL);
+	assert (v->magic == MAGIC_INIT_VALUE);
+
 	qsort (v->elems, v->n_elems, v->elem_sz, fn);
 }

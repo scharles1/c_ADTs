@@ -83,7 +83,7 @@ void
 list_destroy (list *l)
 {
 	assert (l != NULL);
-	assert (l->magic = MAGIC_INIT_VALUE);
+	assert (l->magic == MAGIC_INIT_VALUE);
 
 	list_elem *l_elem, *l_elem_next;
 
@@ -109,11 +109,11 @@ list_destroy (list *l)
  * ------------------------------------------------------
  */
 void 
-list_push_front (list *l, void *new_node);
+list_push_front (list *l, void *new_node)
 {
 	assert (l != NULL);
 	assert (new_node != NULL);
-	assert (l->magic = MAGIC_INIT_VALUE);
+	assert (l->magic == MAGIC_INIT_VALUE);
 
 
 }
@@ -127,7 +127,7 @@ list_push_back (list *l, void *new_node)
 {
 	assert (l != NULL);
 	assert (new_node != NULL);
-	assert (l->magic = MAGIC_INIT_VALUE);
+	assert (l->magic == MAGIC_INIT_VALUE);
 
 }
 
@@ -139,8 +139,9 @@ void *
 list_front (list *l)
 {
 	assert (l != NULL);
-	assert (l->magic = MAGIC_INIT_VALUE);
+	assert (l->magic == MAGIC_INIT_VALUE);
 
+	return NULL;
 }
 
 /**
@@ -151,7 +152,9 @@ void *
 list_back (list *l)
 {
 	assert (l != NULL);
-	assert (l->magic = MAGIC_INIT_VALUE);
+	assert (l->magic == MAGIC_INIT_VALUE);
+
+	return NULL;
 }
 
 /**
@@ -162,7 +165,7 @@ void
 list_pop_front (list *l)
 {
 	assert (l != NULL);
-	assert (l->magic = MAGIC_INIT_VALUE);
+	assert (l->magic == MAGIC_INIT_VALUE);
 }
 
 /**
@@ -173,5 +176,5 @@ void
 list_pop_back (list *l)
 {
 	assert (l != NULL);
-	assert (l->magic = MAGIC_INIT_VALUE);
+	assert (l->magic == MAGIC_INIT_VALUE);
 }
