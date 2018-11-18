@@ -8,8 +8,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <stdlib.h>
-#include <stdbool.h>
+#include "ADT_common.h"
 
 /**
  * Type: vector
@@ -19,23 +18,6 @@
  * requires clients to use the prescribed API
  */
 typedef struct vector_implementation vector;
-
-/**
- * Type: elem_destroy_fn
- * ------------------------------------------------------
- * The client can create vectors that hold complex objects. When adding an 
- * object to the vector, the ownership of that object is transferred to the
- * vector module and the necessary cleanup required when destroyed is done on
- * each object via this function provided by the client.
- */
-typedef void (*elem_destroy_fn) (void *addr);
-
-/**
- * Type: compare_fn
- * ------------------------------------------------------
- * Typedef for compare function used for sorting and searching.
- */
-typedef int (*compare_fn) (const void *elem1, const void *elem2);
 
 /**
  * Function: vector_init
