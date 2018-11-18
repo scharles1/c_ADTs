@@ -9,15 +9,7 @@
 #define VECTOR_H
 
 #include "ADT_common.h"
-
-/**
- * Type: vector
- * ------------------------------------------------------
- * The intention with this type is to hide the internals of the vector struct
- * by defining the vector_implementation struct in the vector.c file. This 
- * requires clients to use the prescribed API
- */
-typedef struct vector_implementation vector;
+#include "ADT_private_implementations.h"
 
 /**
  * Function: vector_init

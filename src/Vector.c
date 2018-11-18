@@ -14,28 +14,6 @@
 #define MAGIC_INIT_VALUE       (0x739caf14a2d9e85f)
 
 /**
- * Struct: vector_implementation
- * ----------------------------------
- * The private vector implementation
- *
- * field elems        - the start of the array of elements
- * field capacity     - the current number of elements the vector can hold
- * field elem_sz      - the size of elements in bytes the vector stores
- * field n_elems      - the current number of elements stored in the vector
- * field elem_destroy - the function to call on the vector elements to destroy
- *                       on clean up
- */
-struct vector_implementation
-{
-	void *elems;
-	size_t capacity;
-	size_t elem_sz;
-	size_t n_elems;
-	size_t magic;
-	elem_destroy_fn elem_destroy;
-};
-
-/**
  * Function: vector_double_capacity
  * ------------------------------------------------------
  * Module function to handle dynamic resize of a vector's capacity

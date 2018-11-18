@@ -9,6 +9,7 @@
 #define LIST_H
 
 #include "ADT_common.h"
+#include "ADT_private_implementations.h"
 
 /**
  * The use for this list API requires the client to embed the list_elem object
@@ -27,24 +28,6 @@
  * to_insert->data = 0xdeadbeef;
  * list_push_front (l, &to_insert);
  */
-
-/**
- * Type: list
- * ------------------------------------------------------
- * The intention with this type is to hide the internals of the list struct
- * by defining the list_implementation struct in the LIST.c file. This 
- * requires clients to use the prescribed API
- */
-typedef struct list_implementation list;
-
-/**
- * Type: list_elem
- * ------------------------------------------------------
- * The intention with this type is to hide the internals of the list_elem
- * struct by defining the list_elem_implementation struct in the LIST.c file. 
- * This requires clients to use the prescribed API
- */
-typedef struct list_elem_implementation list_elem;
 
 /**
  * Function: list_init_static
