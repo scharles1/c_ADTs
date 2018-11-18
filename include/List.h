@@ -13,7 +13,7 @@
 
 /**
  * The use for this list API requires the client to embed the list_elem object
- * as the first field of a struct that will be the nodes of the list.
+ * as the FIRST FIELD of a struct that will be the nodes of the list.
  *
  * For example, to make a list storing simple unsigned integers:
  * 
