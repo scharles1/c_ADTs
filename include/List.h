@@ -76,6 +76,15 @@ list *list_init (elem_destroy_fn fn);
 void list_destroy (list *l);
 
 /**
+ * Function: list_size
+ * Usage: size_t size = list_size (l)
+ * ------------------------------------------------------
+ * Returns the number of elements in the list.
+ *
+ */
+size_t list_size (const list *l);
+
+/**
  * Function: list_push_front
  * Usage: list_push_front (l, &new_node)
  * ------------------------------------------------------
@@ -95,14 +104,14 @@ void list_push_back (list *l, void *new_node);
  * Usage: my_node_t *front = list_front (l)
  * ------------------------------------------------------
  */
-void *list_front (list *l);
+void *list_front (const list *l);
 
 /**
  * Function: list_back
  * Usage: my_node_t *back = list_back (l)
  * ------------------------------------------------------
  */
-void *list_back (list *l);
+void *list_back (const list *l);
 
 /**
  * Function: list_pop_front

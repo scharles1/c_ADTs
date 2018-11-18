@@ -105,6 +105,19 @@ list_destroy (list *l)
 }
 
 /**
+ * Function: list_size
+ * ------------------------------------------------------
+ */
+size_t list_size (const list *l)
+{
+	assert (l != NULL);
+	assert (l->magic == MAGIC_INIT_VALUE);
+
+	return l->n_elems;
+
+}
+
+/**
  * Function: list_push_front
  * ------------------------------------------------------
  */
@@ -115,7 +128,18 @@ list_push_front (list *l, void *new_node)
 	assert (new_node != NULL);
 	assert (l->magic == MAGIC_INIT_VALUE);
 
+	list_elem *to_insert = new_node;
+	
+	to_insert->next = l->head;
+	to_insert->prev = NULL;
+	l->head = to_insert;
 
+	if (l->tail == NULL)
+	{
+		l->tail = to_insert;
+	}
+
+	++l->n_elems;
 }
 
 /**
@@ -129,6 +153,18 @@ list_push_back (list *l, void *new_node)
 	assert (new_node != NULL);
 	assert (l->magic == MAGIC_INIT_VALUE);
 
+	list_elem *to_insert = new_node;
+	
+	to_insert->prev = l->tail;
+	to_insert->next = NULL;
+	l->tail = to_insert;
+
+	if (l->head == NULL)
+	{
+		l->head = to_insert;
+	}
+
+	++l->n_elems;
 }
 
 /**
@@ -136,12 +172,12 @@ list_push_back (list *l, void *new_node)
  * ------------------------------------------------------
  */
 void *
-list_front (list *l)
+list_front (const list *l)
 {
 	assert (l != NULL);
 	assert (l->magic == MAGIC_INIT_VALUE);
 
-	return NULL;
+	return l->head;
 }
 
 /**
@@ -149,12 +185,12 @@ list_front (list *l)
  * ------------------------------------------------------
  */
 void *
-list_back (list *l)
+list_back (const list *l)
 {
 	assert (l != NULL);
 	assert (l->magic == MAGIC_INIT_VALUE);
 
-	return NULL;
+	return l->tail;
 }
 
 /**
@@ -166,6 +202,29 @@ list_pop_front (list *l)
 {
 	assert (l != NULL);
 	assert (l->magic == MAGIC_INIT_VALUE);
+	assert (l->n_elems > 0);
+
+	list_elem *old_head, *new_head;
+
+	old_head = l->head;
+	new_head = old_head->next;
+
+	if (l->n_elems == 1)
+	{
+		l->head = l->tail = NULL;
+	}
+	else
+	{
+		l->head = new_head;
+		new_head->prev = NULL;
+	}
+
+	if (l->elem_destroy)
+	{
+		l->elem_destroy (old_head);
+	}
+
+	--l->n_elems;
 }
 
 /**
@@ -177,4 +236,27 @@ list_pop_back (list *l)
 {
 	assert (l != NULL);
 	assert (l->magic == MAGIC_INIT_VALUE);
+	assert (l->n_elems > 0);
+
+	list_elem *old_tail, *new_tail;
+
+	old_tail = l->tail;
+	new_tail = old_tail->prev;
+
+	if (l->n_elems == 1)
+	{
+		l->head = l->tail = NULL;
+	}
+	else
+	{
+		l->tail = new_tail;
+		new_tail->next = NULL;
+	}
+
+	if (l->elem_destroy)
+	{
+		l->elem_destroy (old_tail);
+	}
+
+	--l->n_elems;
 }

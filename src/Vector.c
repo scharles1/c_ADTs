@@ -305,7 +305,7 @@ vector_clear (vector *v)
  * param v      - initialized vector
  * param key    - a pointer to the data to find in the vector
  * param fn     - a compare function for searching
- * param sorted - a flag provided to control signal whether the vector is sorted
+ * param sorted - a flag provided to signal whether the vector is sorted
  *
  * returns - a pointer to the matching vector element or NULL if it doesn't 
  *           contain the key
