@@ -12,6 +12,8 @@
 #define MAGIC_INIT_VALUE       (0x739caf14a2d9e85f)
 #define NEXT_PTR_FROM_PREV(P)  ((void **)(P) - 1)
 #define PREV_PTR_FROM_NEXT(P)  ((void **)(P) + 1)
+#define ELEM_PTR_FROM_PREV(P)  ((void *)((void **)(P) - 1))
+#define ELEM_PTR_FROM_NEXT(P)  ((void *)(P))
 
 /**
  * Function: list_init_static
@@ -64,9 +66,11 @@ list_destroy (list *l)
 
 	if (l->elem_destroy)
 	{
-		while (*cur != (void *)&l->tail)
+		while (cur != (void **)&l->tail)
 		{
-			; // TODO: implement this
+			next = NEXT_PTR_FROM_PREV (*cur);
+			l->elem_destroy (ELEM_PTR_FROM_PREV (*cur));
+			cur = next;
 		}
 	}
 
@@ -103,7 +107,7 @@ list_push_front (list *l, void *new_node)
 	list_elem *to_insert = new_node;
 	
 	to_insert->next = l->head;
-	*(l->head) = (void *)&(to_insert->next);
+	*l->head = (void *)&(to_insert->next);
 
 	to_insert->prev = (void **)&l->head;
 	l->head = (void **)&to_insert->prev;
@@ -125,7 +129,7 @@ list_push_back (list *l, void *new_node)
 	list_elem *to_insert = new_node;
 	
 	to_insert->prev = l->tail;
-	*(l->tail) = (void *)&(to_insert->prev);
+	*l->tail = (void *)&(to_insert->prev);
 
 	to_insert->next = (void **)&l->tail;
 	l->tail = (void **)&to_insert->next;
@@ -143,7 +147,7 @@ list_front (const list *l)
 	assert (l != NULL);
 	assert (l->magic == MAGIC_INIT_VALUE);
 
-	return NULL;
+	return ELEM_PTR_FROM_PREV (l->head);
 }
 
 /**
@@ -156,7 +160,7 @@ list_back (const list *l)
 	assert (l != NULL);
 	assert (l->magic == MAGIC_INIT_VALUE);
 
-	return NULL;
+	return ELEM_PTR_FROM_NEXT (l->tail);
 }
 
 /**
@@ -170,7 +174,18 @@ list_pop_front (list *l)
 	assert (l->magic == MAGIC_INIT_VALUE);
 	assert (l->n_elems > 0);
 
-	/* TODO: implement */
+	list_elem *to_remove;
+
+	to_remove = ELEM_PTR_FROM_PREV (l->head);
+	l->head = *NEXT_PTR_FROM_PREV (l->head);
+	*l->head = (void *)&l->head;
+
+	if (l->elem_destroy)
+	{
+		l->elem_destroy (to_remove);
+	}
+
+	--l->n_elems;
 }
 
 /**
@@ -185,4 +200,23 @@ list_pop_back (list *l)
 	assert (l->n_elems > 0);
 
 	/* TODO: implement */
+}
+
+void
+list_print (list *l)
+{
+	unsigned i = 0;
+	void **cur = l->head, **next;
+
+	printf ("head ptr addr: %p, head ptr contents: %p\n", &l->head, l->head);
+
+	while (cur != (void **)&l->tail)
+	{
+		next = NEXT_PTR_FROM_PREV (cur);
+		printf ("node %u, prev ptr addr: %p, prev ptr contents: %p, next ptr addr: %p, next ptr contents: %p\n", i, cur, *cur, next, *next);
+		cur = *next;
+		i++;
+	}
+
+	printf ("tail ptr addr: %p, tail ptr contents: %p\n", &l->tail, l->tail);
 }
