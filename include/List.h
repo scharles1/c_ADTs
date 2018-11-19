@@ -63,7 +63,6 @@ void list_destroy (list *l);
  * Usage: size_t size = list_size (l)
  * ------------------------------------------------------
  * Returns the number of elements in the list.
- *
  */
 size_t list_size (const list *l);
 
