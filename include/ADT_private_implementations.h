@@ -80,6 +80,19 @@ typedef struct
  */
 
 /**
+ * Struct: set_elem
+ * ----------------------------------
+ * The private set_elem implementation
+ *
+ * field 
+ */
+typedef struct
+{
+
+
+} set_elem;
+
+/**
  * Struct: set
  * ----------------------------------
  * The private set implementation
@@ -88,9 +101,12 @@ typedef struct
  */
 typedef struct
 {
-	void **next;
-	void **prev;
+	size_t elem_sz;
+	size_t n_elems;
+	set_elem *root;
 } set;
+
+
 
 /* ------------------------------------------------------------------------- */
 
