@@ -13,7 +13,7 @@
 #define IS_RED(P)          ((uintptr_t)(P) & RED_MASK)
 #define SET_RED(P)         ((uintptr_t)(P) |= RED_MASK)
 #define SET_BLACK(P)       ((uintptr_t)(P) &= ~RED_MASK)
-#define PTR_IGNORE_FLAG(P) ((uintptr_t)(P) & RED_MASK)
+#define PTR_IGNORE_FLAG(P) ((uintptr_t)(P) & ~RED_MASK)
 
 /**
  * Function: set_init
@@ -26,10 +26,9 @@ set_init (size_t elem_sz, compare_fn cmp_fn, elem_destroy_fn destroy_fn)
 	assert (elem_sz > 0);
 	set *s;
 
-	s = malloc (sizeof (set));
+	s = calloc (1, sizeof (set));
 	assert (s != NULL);
 
-	memset (s, 0, sizeof (set));
 	s->elem_sz = elem_sz;
 	s->elem_cmp = cmp_fn;
 	s->elem_destroy = destroy_fn;
@@ -82,6 +81,34 @@ set_size (const set *s)
 	return s->n_elems;
 }
 
+
+/**
+ * Function: set_contains_helper
+ * ------------------------------------------------------
+ */
+static bool
+set_contains_helper (const set *s, const set_elem *se, const void *key)
+{
+	bool retVal = false;
+	int result, i;
+
+	if (se != NULL)
+	{
+		result = s->elem_cmp (&se->data, key);
+		
+		if (result == 0)
+		{
+			retVal =  true;
+		}
+		else
+		{
+			i = (result < 0) ? 0 : 1;
+			retVal = set_contains_helper (s, PTR_IGNORE_FLAG (se->links[i]), key);
+		}
+	}
+	return retVal;
+}
+
 /**
  * Function: set_contains
  * ------------------------------------------------------
@@ -89,7 +116,11 @@ set_size (const set *s)
 bool
 set_contains (const set *s, const void *key)
 {
-	return false;
+	assert (s != NULL);
+	assert (key != NULL);
+	assert (s->magic == MAGIC_INIT_VALUE);
+
+	return set_contains_helper (s, s->root, key);
 }
 
 /**

@@ -86,9 +86,10 @@ typedef struct
  *
  * field 
  */
-typedef struct
+typedef struct node
 {
-	struct set_elem *links[2];
+	struct node *links[2];
+	uint8_t data[];
 } set_elem;
 
 /**
