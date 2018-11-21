@@ -88,8 +88,7 @@ typedef struct
  */
 typedef struct
 {
-
-
+	set_elem *links[2];
 } set_elem;
 
 /**
@@ -103,6 +102,8 @@ typedef struct
 {
 	size_t elem_sz;
 	size_t n_elems;
+	compare_fn elem_cmp;
+	elem_destroy_fn elem_destroy;
 	set_elem *root;
 } set;
 
