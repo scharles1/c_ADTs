@@ -8,7 +8,12 @@
 #include <string.h>
 #include <stdio.h>
 
-#define MAGIC_INIT_VALUE (0x739caf14a2d9e85f)
+#define MAGIC_INIT_VALUE   (0x739caf14a2d9e85f)
+#define RED_MASK           (0x1UL)
+#define IS_RED(P)          ((uintptr_t)(P) & RED_MASK)
+#define SET_RED(P)         ((uintptr_t)(P) |= RED_MASK)
+#define SET_BLACK(P)       ((uintptr_t)(P) &= ~RED_MASK)
+#define PTR_IGNORE_FLAG(P) ((uintptr_t)(P) & RED_MASK)
 
 /**
  * Function: set_init
@@ -41,7 +46,7 @@ void
 set_destroy (set *s)
 {
 	assert (s != NULL);
-	assert (s->magic = MAGIC_INIT_VALUE);
+	assert (s->magic == MAGIC_INIT_VALUE);
 
 	if (s->elem_destroy)
 	{
@@ -59,7 +64,7 @@ bool
 set_is_empty (const set *s)
 {
 	assert (s != NULL);
-	assert (s->magic = MAGIC_INIT_VALUE);
+	assert (s->magic == MAGIC_INIT_VALUE);
 
 	return (s->n_elems == 0);
 }
@@ -72,7 +77,7 @@ size_t
 set_size (const set *s)
 {
 	assert (s != NULL);
-	assert (s->magic = MAGIC_INIT_VALUE);
+	assert (s->magic == MAGIC_INIT_VALUE);
 
 	return s->n_elems;
 }
@@ -84,7 +89,7 @@ set_size (const set *s)
 bool
 set_contains (const set *s, const void *key)
 {
-
+	return false;
 }
 
 /**
@@ -104,5 +109,5 @@ set_add (set *s, const void *key)
 bool 
 set_remove (set *s, const void *key)
 {
-
+	return false;
 }
