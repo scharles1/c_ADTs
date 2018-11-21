@@ -17,7 +17,7 @@
  * ------------------------------------------------------
  * Creates a new empty set.
  */
-set *set_init (compare_fn cmp_fn, elem_destroy_fn destory_fn);
+set *set_init (size_t elem_sz, compare_fn cmp_fn, elem_destroy_fn destroy_fn);
 
 /**
  * Function: set_destroy

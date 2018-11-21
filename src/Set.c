@@ -8,12 +8,14 @@
 #include <string.h>
 #include <stdio.h>
 
+#define MAGIC_INIT_VALUE (0x739caf14a2d9e85f)
+
 /**
  * Function: set_init
  * ------------------------------------------------------
  */
 set *
-set_init (size_t elem_sz, compare_fn cmp_fn, elem_destroy_fn destory_fn)
+set_init (size_t elem_sz, compare_fn cmp_fn, elem_destroy_fn destroy_fn)
 {
 	assert (cmp_fn != NULL);
 	assert (elem_sz > 0);
@@ -22,11 +24,11 @@ set_init (size_t elem_sz, compare_fn cmp_fn, elem_destroy_fn destory_fn)
 	s = malloc (sizeof (set));
 	assert (s != NULL);
 
+	memset (s, 0, sizeof (set));
 	s->elem_sz = elem_sz;
-	s->n_elems = 0;
 	s->elem_cmp = cmp_fn;
-	s->elem_destroy = elem_destroy_fn;
-	s->root = NULL;
+	s->elem_destroy = destroy_fn;
+	s->magic = MAGIC_INIT_VALUE;
 
 	return s;
 }
