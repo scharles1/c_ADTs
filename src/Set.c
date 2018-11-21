@@ -40,7 +40,15 @@ set_init (size_t elem_sz, compare_fn cmp_fn, elem_destroy_fn destroy_fn)
 void
 set_destroy (set *s)
 {
+	assert (s != NULL);
+	assert (s->magic = MAGIC_INIT_VALUE);
 
+	if (s->elem_destroy)
+	{
+		/* TODO: need to traverse tree and free all the leaves */
+	}
+
+	free (s);
 }
 
 /**
@@ -50,7 +58,10 @@ set_destroy (set *s)
 bool
 set_is_empty (const set *s)
 {
+	assert (s != NULL);
+	assert (s->magic = MAGIC_INIT_VALUE);
 
+	return (s->n_elems == 0);
 }
 
 /**
@@ -60,7 +71,10 @@ set_is_empty (const set *s)
 size_t 
 set_size (const set *s)
 {
+	assert (s != NULL);
+	assert (s->magic = MAGIC_INIT_VALUE);
 
+	return s->n_elems;
 }
 
 /**
