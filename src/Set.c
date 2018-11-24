@@ -9,11 +9,6 @@
 #include <stdio.h>
 
 #define MAGIC_INIT_VALUE   (0x739caf14a2d9e85f)
-#define RED_MASK           (0x1UL)
-#define IS_RED(P)          ((uintptr_t)(P) & RED_MASK)
-#define SET_RED(P)         ((uintptr_t)(P) |= RED_MASK)
-#define SET_BLACK(P)       ((uintptr_t)(P) &= ~RED_MASK)
-#define PTR_IGNORE_FLAG(P) ((uintptr_t)(P) & ~RED_MASK)
 
 /**
  * Function: set_init

@@ -89,6 +89,7 @@ typedef struct
 typedef struct node
 {
 	struct node *links[2];
+	size_t is_red;
 	uint8_t data[];
 } set_elem;
 
